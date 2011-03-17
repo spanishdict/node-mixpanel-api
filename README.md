@@ -5,8 +5,7 @@ Queries the [Mixpanel Data API](http://mixpanel.com/api/docs/guides/api/v2). Req
 
 Installation
 ============
-
-`npm install mixpanel`
+clone this repo, it's not on npm yet.
 
 Show me the code
 ================
