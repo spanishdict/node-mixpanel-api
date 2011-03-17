@@ -6,43 +6,31 @@ Queries the [Mixpanel Data API](http://mixpanel.com/api/docs/guides/api/v2). Req
 Installation
 ============
 
-`npm install mixpanel-api`
+`npm install mixpanel`
 
 Show me the code
 ================
 
-Note: All examples and the implementation are in [coffee-script](http://jashkenas.github.com/coffee-script/). CoffeeScript is great and you should probably use it. If you don't want to use CoffeeScript, you can easily convert these examples using the 'Try CoffeeScript' button on the aforementioned website or using the `coffee` command-line utility.
+Note: this was forked from the CoffeScript implementation done by Campfire Labs.
+mixpanel = require('mixpanel')
 
-    MixpanelAPI = require 'lib/mixpanel_api'
+var api_key = 'YOUR API KEY',
+	api_secret = 'YOUR API SECRET';
 
-    mixpanel = new MixpanelAPI
-      
-      # required
-      api_key: 'ABC'
-      api_secret: 'XYZ'
-      
-      # optional
-      default_valid_for: 60 # seconds a request signature is valid for
-      
-    req =
-      event: 'my_button.click'
-      name: 'color'
-      type: 'general'
-      unit: 'hour'
-      interval: 100
-      limit: 100
-    
-    # queries the events/properties endpoint
-    mixpanel.request 'events/properties', req, (err, res) ->
-      return console.error err if err
-      
-      # `res` is the JSON-parsed response from the server.
-      # example:
-      # {
-      #   legend_size: 3
-      #   data:
-      #     series: [ '2011-02-10 14:00:00' ]
-      #     values: {...}
-      # }
-      console.log res
+var mx = new mixpanel({
+	api_key: api_key,
+	api_secret: api_secret
+});
 
+mx.request(
+	'button click',
+	{
+		type: 'unique',
+		interval: 7,
+		unit: 'day'
+	},
+	function(error, data) {
+		console.dir(data);
+	}
+		
+)

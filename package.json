@@ -1,23 +1,27 @@
 {
-    "name": "mixpanel-api",
+    "name": "mixpanel",
     "version": "0.1.1",
-    "description": "Access the mixpanel API from nodejs",
+    "description": "Access the Mixpanel Data API from node.js",
     "author": {
-        "name": "Jonas Huckestein",
-        "email": "jonas.huckestein@gmail.com",
-        "url": "http://thezukunft.com"
+        "name": "Tim Trefren",
+        "email": "tim@mixpanel.com",
+        "url": "http://mixpanel.com"
     },
+	"contributors": [
+		{
+			"name": "Jonas Huckestein",
+			"email": "jonas.huckestein@gmail.com",
+			"url": "http://thezukunft.com"
+		}
+	],
     "repositories": [
         {
             "type": "git",
-            "url": "http://github.com/campfirelabs/node-mixpanel-api.git",
+            "url": "http://github.com/mixpanel/mixpanel-node.git",
         }
     ],
     "engines": {
         "node": ">= 0.4.0"
     },
-    "main": "./index.js",
-    "dependencies": {
-        "coffee-script": ">= 1.0.0"
-    }
+    "main": "./index.js"
 }
