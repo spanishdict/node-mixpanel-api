@@ -12,25 +12,26 @@ Show me the code
 ================
 
 Note: this was forked from the CoffeScript implementation done by Campfire Labs.
-mixpanel = require('mixpanel')
 
-var api_key = 'YOUR API KEY',
-	api_secret = 'YOUR API SECRET';
+    mixpanel = require('mixpanel')
 
-var mx = new mixpanel({
-	api_key: api_key,
-	api_secret: api_secret
-});
+    var api_key = 'YOUR API KEY',
+        api_secret = 'YOUR API SECRET';
 
-mx.request(
-	'button click',
-	{
-		type: 'unique',
-		interval: 7,
-		unit: 'day'
-	},
-	function(error, data) {
-		console.dir(data);
-	}
-		
-)
+    var mx = new mixpanel({
+        api_key: api_key,
+        api_secret: api_secret
+    });
+
+    mx.request(
+        'button click',
+        {
+            type: 'unique',
+            interval: 7,
+            unit: 'day'
+        },
+        function(error, data) {
+            console.dir(data);
+        }
+            
+    )
