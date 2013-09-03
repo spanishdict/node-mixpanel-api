@@ -34,8 +34,7 @@ Note: this was forked from the CoffeScript implementation done by Campfire Labs.
         function(error, data) {
             console.dir(data);
         }
-            
-    )
+    );
 
 Exporting raw data from Mixpanel
 --------------------------------
@@ -57,7 +56,7 @@ stream, you receive individual event objects, one at a time.
         api_secret: api_secret
     });
 
-    mx.export_data(function(res) {
+    mx.export_data({ from_date: '2013-09-01', to_date: '2013-09-02' }, function(res) {
         res.on('data', function(event_object) {
             console.dir(event_object);
         });
