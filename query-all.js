@@ -11,7 +11,7 @@ var mx = new mixpanel({
     api_secret: api_secret
 });
 
-var pageSize, totalCount, sessionId, numRequests, recordsCount;
+var pageSize, totalCount, sessionId, numRequests, recordsCount = 0;
 
 var datum ={ '$distinct_id': '1413771a12a46c-055fa6b545ee89-765c787d-1fa400-1413771a12b2b0',
              '$properties':
@@ -133,7 +133,9 @@ mx.request(
         console.log("page_size: ", data.page_size, "total: ", data.total, "session_id: ", data.session_id);
         pageSize = parseInt(data.page_size, 10);
         totalCount = parseInt(data.total, 10);
-        numRequests = Math.ceil(pageSize / totalCount);
+        numRequests = Math.ceil(totalCount / pageSize);
+        // sanity check
+        console.log("pageSize totalCount numRequests recordsCount", pageSize, totalCount, numRequests, recordsCount);
         sessionId = data.session_id;
 
         // temp
