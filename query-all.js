@@ -12,6 +12,7 @@ var mx = new mixpanel({
 });
 
 var pageSize, totalCount, sessionId, numRequests, recordsCount = 0;
+var outFilename = '/tmp/data.csv';
 
 var datum ={ '$distinct_id': '1413771a12a46c-055fa6b545ee89-765c787d-1fa400-1413771a12b2b0',
              '$properties':
@@ -134,11 +135,12 @@ mx.request(
         pageSize = parseInt(data.page_size, 10);
         totalCount = parseInt(data.total, 10);
         numRequests = Math.ceil(totalCount / pageSize);
-        // sanity check
-        console.log("pageSize totalCount numRequests recordsCount", pageSize, totalCount, numRequests, recordsCount);
         sessionId = data.session_id;
 
-        // temp
+        // sanity check
+        console.log("pageSize totalCount numRequests recordsCount", pageSize, totalCount, numRequests, recordsCount);
+
+        // Inspect user data format.
         // for (var result in data.results) {
         //     var user = data.results[result];
         //     if(user.$properties.sub_state == "subscriber") {
@@ -170,7 +172,8 @@ var doLoop = function() {
                     for (var result in data.results) {
                         var user = data.results[result];
                         var lookupColumn = function(col) {
-                            if(col == "$campaigns" || col == "$deliveries" || col == "$transactions") {
+                            if(col == "$campaigns" || col == "$deliveries") {
+                                // These are arrays.
                                 if(user.$properties[col]) {
                                     return user.$properties[col].join(" ");
                                 }
@@ -178,31 +181,55 @@ var doLoop = function() {
                                     return "";
                                 }
                             }
+                            else if(col == "$transactions") {
+                                // $transactions looks like [ { '$amount': 95.4, '$time': '2013-09-16T20:12:49' } ]
+                                var trans = user.$properties[col];
+                                if(trans) {
+                                    var accum = [];
+                                    for(var t in trans) {
+                                        accum.push(trans[t].$amount);
+                                    }
+                                    //console.log("Returning accum", accum.join(" "));
+                                    return accum.join(" ");
+                                }
+                                else {
+                                    return "";
+                                }
+                            }
                             else {
-                                return user.$properties[col] || "~";
+                                return user.$properties[col] || "";
                             }
                         };
                         var values = columns.map(lookupColumn);
-                        //console.log("User props: ", util.inspect(user, {depth: null}));
                         outputData.push(values);
                     }
-                    next();
+                    // Short break between requests to prevent rate
+                    // limiting (not sure if MP has any rate limits or
+                    // not).
+                    setTimeout(next, 1000);
                 }
             }
         );
     };
 
     // Loop to make the requests. Save the data.
-    async.timesSeries(1, makeRequest, function(err) {
-        console.log("Finished with error: ", err);
+    async.timesSeries(numRequests, makeRequest, function(err) {
+        if(err) {
+            console.log("Finished MP requests with error: ", err);
+        }
+        else {
+            console.log("Finished MP requests without error.");
+        }
+
         // Write columns.
+        console.log("Writing to: ", outFilename);
         outputData = [columns].concat(outputData);
 
         var toOpts = {
             delimiter: "\t",
             quoted: true
         };
-        csv().from.array(outputData).to('/tmp/data.csv').to.options(toOpts);
+        csv().from.array(outputData).to(outFilename).to.options(toOpts);
     });
 
 };
