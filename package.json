@@ -1,32 +1,34 @@
 {
-    "name": "mixpanel",
-    "version": "0.2.1",
-    "description": "Access the Mixpanel Data API from node.js",
-    "author": {
-        "name": "Tim Trefren",
-        "email": "tim@mixpanel.com",
-        "url": "http://mixpanel.com"
+  "name": "mixpanel",
+  "version": "0.2.1",
+  "description": "Access the Mixpanel Data API from node.js",
+  "author": {
+    "name": "Tim Trefren",
+    "email": "tim@mixpanel.com",
+    "url": "http://mixpanel.com"
+  },
+  "contributors": [
+    {
+      "name": "Jonas Huckestein",
+      "email": "jonas.huckestein@gmail.com",
+      "url": "http://thezukunft.com"
     },
-    "contributors": [
-	{
-	    "name": "Jonas Huckestein",
-	    "email": "jonas.huckestein@gmail.com",
-	    "url": "http://thezukunft.com"
-	},
-        {
-            "name": "Bob Showalter",
-            "email": "showaltb@gmail.com"
-        }
-    ],
-    "repository": {
-        "type": "git",
-        "url": "http://github.com/mixpanel/mixpanel-node.git"
-    },
-    "dependencies": {
-        "event-stream": "3.0.x"
-    },
-    "engines": {
-        "node": ">= 0.8.0"
-    },
-    "main": "./index.js"
+    {
+      "name": "Bob Showalter",
+      "email": "showaltb@gmail.com"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/mixpanel/mixpanel-node.git"
+  },
+  "dependencies": {
+    "event-stream": "3.0.x",
+    "async": "~0.2.9",
+    "csv": "~0.3.6"
+  },
+  "engines": {
+    "node": ">= 0.8.0"
+  },
+  "main": "./index.js"
 }
