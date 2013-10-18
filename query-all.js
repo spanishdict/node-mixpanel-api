@@ -3,6 +3,7 @@ var mixpanel = require('./index'),
     csv = require("csv"),
     async = require("async");
 
+// prod api keys.
 var api_key  = '86e09a1a84e0ca6df9c213438e6def51',
     api_secret = 'bc269d4530f5d3f7dfd43a3fb3d9d4ea';
 
@@ -196,6 +197,9 @@ var doLoop = function() {
                                     return "";
                                 }
                             }
+                            else if(col == "goal_explanation") {
+                                return "";
+                            }
                             else {
                                 return user.$properties[col] || "";
                             }
@@ -226,8 +230,8 @@ var doLoop = function() {
         outputData = [columns].concat(outputData);
 
         var toOpts = {
-            delimiter: "\t",
-            quoted: true
+            delimiter: "\t"
+            //quoted: true
         };
         csv().from.array(outputData).to(outFilename).to.options(toOpts);
     });
