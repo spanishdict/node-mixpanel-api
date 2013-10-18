@@ -4,8 +4,8 @@ var mixpanel = require('./index'),
     async = require("async");
 
 // prod api keys.
-var api_key  = '86e09a1a84e0ca6df9c213438e6def51',
-    api_secret = 'bc269d4530f5d3f7dfd43a3fb3d9d4ea';
+var api_key  = '',
+    api_secret = '';
 
 var mx = new mixpanel({
     api_key: api_key,
