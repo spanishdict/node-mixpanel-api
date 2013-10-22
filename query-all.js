@@ -3,9 +3,23 @@ var mixpanel = require('./index'),
     csv = require("csv"),
     async = require("async");
 
-// prod api keys.
+// get api keys from local config file.
+var fs = require("fs"),
+    configFile = "development.json",
+    configPath = "./local/";
+
 var api_key  = '',
     api_secret = '';
+
+try {
+    var config = JSON.parse(fs.readFileSync(configPath + configFile));
+    api_key = config.apiKey;
+    api_secret = config.apiSecret;
+}
+catch(ex) {
+    console.log("Error reading ", configPath + configFile);
+}
+
 
 var mx = new mixpanel({
     api_key: api_key,
@@ -217,7 +231,7 @@ var doLoop = function() {
     };
 
     // Loop to make the requests. Save the data.
-    async.timesSeries(numRequests, makeRequest, function(err) {
+    async.timesSeries(1, makeRequest, function(err) {
         if(err) {
             console.log("Finished MP requests with error: ", err);
         }
