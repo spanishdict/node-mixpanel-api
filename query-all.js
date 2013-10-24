@@ -231,7 +231,7 @@ var doLoop = function() {
     };
 
     // Loop to make the requests. Save the data.
-    async.timesSeries(1, makeRequest, function(err) {
+    async.timesSeries(numRequests, makeRequest, function(err) {
         if(err) {
             console.log("Finished MP requests with error: ", err);
         }
