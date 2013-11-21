@@ -3,13 +3,16 @@ var mixpanel = require('./index'),
     csv = require("csv"),
     async = require("async");
 
-// get api keys from local config file.
+// Get api keys from local config file.
 var fs = require("fs"),
-    configFile = "development.json",
+    //configFile = "development.json",
+    //configFile = "staging.json",
+    configFile = "production.json",
     configPath = "./local/";
 
 var api_key  = '',
-    api_secret = '';
+    api_secret = '',
+    REQUEST_INTERVAL = 500; // Short break between requests to prevent rate limiting in case they use it.
 
 try {
     var config = JSON.parse(fs.readFileSync(configPath + configFile));
@@ -20,7 +23,7 @@ catch(ex) {
     console.log("Error reading ", configPath + configFile);
 }
 
-
+// Create Mixpanel instance.
 var mx = new mixpanel({
     api_key: api_key,
     api_secret: api_secret
@@ -29,6 +32,7 @@ var mx = new mixpanel({
 var pageSize, totalCount, sessionId, numRequests, recordsCount = 0;
 var outFilename = '/tmp/data.csv';
 
+// A single sample datum, for inferring what fields are available.
 var datum ={ '$distinct_id': '1413771a12a46c-055fa6b545ee89-765c787d-1fa400-1413771a12b2b0',
              '$properties':
              { '$browser': 'Internet Explorer',
@@ -88,8 +92,9 @@ var datum ={ '$distinct_id': '1413771a12a46c-055fa6b545ee89-765c787d-1fa400-1413
              }
            };
 
-// Initial generation of columns.
-//var columns = Object.keys(datum.$properties);
+// Initial generation of columns. Re-run when available properties change to see what the new ones are.
+var columns = Object.keys(datum.$properties);
+console.log("all columns", columns);
 
 // Define it now that we have a list.
 var columns = [ '$browser',
@@ -140,34 +145,40 @@ var columns = [ '$browser',
 
 var outputData = [];
 
-// Get the size of each page, total number of records, and session_id. Figure out how many requests to make.
+// Initial request: Get the size of each page, total number of
+// records, and session_id. Figure out how many requests to make.
 mx.request(
     'engage',
     {},
     function(error, data) {
+        console.log("Making initial request...");
         if(error) console.log(error);
+
         console.log("page_size: ", data.page_size, "total: ", data.total, "session_id: ", data.session_id);
+
         pageSize = parseInt(data.page_size, 10);
         totalCount = parseInt(data.total, 10);
         numRequests = Math.ceil(totalCount / pageSize);
         sessionId = data.session_id;
 
-        // sanity check
-        console.log("pageSize totalCount numRequests recordsCount", pageSize, totalCount, numRequests, recordsCount);
+        // Sanity check.
+        console.log("Parsed: pageSize totalCount numRequests recordsCount", pageSize, totalCount, numRequests, recordsCount);
 
-        // Inspect user data format.
-        // for (var result in data.results) {
-        //     var user = data.results[result];
-        //     if(user.$properties.sub_state == "subscriber") {
-        //         console.log("User props: ", util.inspect(user, {depth: null}));
-        //     }
-        // }
+        // Inspect user data format to see what columns are available and what the data looks like.
+        for (var result in data.results) {
+            var user = data.results[result];
+            if(user.$properties.sub_state == "subscriber") {
+                console.log("User props: ", util.inspect(user, {depth: null}));
+            }
+        }
 
+        // Get the rest of the data.
         doLoop();
 
     }
 );
 
+// Loop to fetch data.
 var doLoop = function() {
     var makeRequest = function(i, next) {
         mx.request(
@@ -183,10 +194,13 @@ var doLoop = function() {
                 } else {
                     recordsCount += pageSize;
                     console.log("[Request " + i + "] recordsCount: ", recordsCount);
+
                     // Not every user will have every property.
                     for (var result in data.results) {
                         var user = data.results[result];
-                        var lookupColumn = function(col) {
+
+                        // Fix certain columns and fill in blank values.
+                        var fixColumns = function(col) {
                             if(col == "$campaigns" || col == "$deliveries") {
                                 // These are arrays.
                                 if(user.$properties[col]) {
@@ -212,19 +226,21 @@ var doLoop = function() {
                                 }
                             }
                             else if(col == "goal_explanation") {
+                                // Blank out this column.
                                 return "";
                             }
                             else {
+                                // Default to empty string if no data for this column.
                                 return user.$properties[col] || "";
                             }
                         };
-                        var values = columns.map(lookupColumn);
+                        var values = columns.map(fixColumns);
                         outputData.push(values);
                     }
                     // Short break between requests to prevent rate
                     // limiting (not sure if MP has any rate limits or
                     // not).
-                    setTimeout(next, 1000);
+                    setTimeout(next, REQUEST_INTERVAL);
                 }
             }
         );
@@ -243,6 +259,7 @@ var doLoop = function() {
         console.log("Writing to: ", outFilename);
         outputData = [columns].concat(outputData);
 
+        // Set output options.
         var toOpts = {
             delimiter: "\t"
             //quoted: true
