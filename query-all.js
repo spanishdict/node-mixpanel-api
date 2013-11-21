@@ -30,71 +30,71 @@ var mx = new mixpanel({
 });
 
 var pageSize, totalCount, sessionId, numRequests, recordsCount = 0;
-var outFilename = '/tmp/data.csv';
+var outFilename = '/tmp/data.tsv';
 
 // A single sample datum, for inferring what fields are available.
-var datum ={ '$distinct_id': '1413771a12a46c-055fa6b545ee89-765c787d-1fa400-1413771a12b2b0',
-             '$properties':
-             { '$browser': 'Internet Explorer',
-               '$campaigns': [ 22366, 25320, 26018, 26014, 61243, 26012, 26208, 51670, 65285 ],
-               '$city': 'Saint Louis',
-               '$country_code': 'US',
-               '$created': '2013-09-19T14:18:46',
-               '$deliveries':
-               [ 22199032,
-                 22405508,
-                 22820053,
-                 23211483,
-                 23247667,
-                 23625825,
-                 24454851,
-                 25930229,
-                 26334587 ],
-               '$email': 'susanloneill@att.net',
-               '$first_name': 'susan oneill',
-               '$initial_referrer': '$direct',
-               '$initial_referring_domain': '$direct',
-               '$last_name': null,
-               '$last_seen': '2013-10-14T17:38:15',
-               '$os': 'Windows',
-               '$region': 'Missouri',
-               '$transactions': [ { '$amount': 95.4, '$time': '2013-10-07T11:46:47' } ],
-               birth_year: 1945,
-               email_announcements: true,
-               email_newsletter: true,
-               email_offers: true,
-               email_reminders: true,
-               gender: 'F',
-               goal_explanation: 'Vacation in Spanish speaking areas',
-               goal_hours: 3,
-               last_login: '2013-10-14T17:38:15',
-               learning_lang: 'es',
-               lessons_completed: 26,
-               native_lang: 'en',
-               self_assessment: 1,
-               sub_activated_at: '2013-10-07T11:46:45',
-               sub_attempted_at: '2013-10-07T11:46:50',
-               sub_canceled_at: null,
-               sub_current_period_ends_at: '2014-10-07T11:46:45',
-               sub_current_period_started_at: '2013-10-07T11:46:45',
-               sub_expires_at: null,
-               sub_plan_code: '0002-12',
-               sub_plan_months: 12,
-               sub_plan_ppm: 7.95,
-               sub_state: 'subscriber',
-               sub_uuid: '230264a57285a2645836344fe0957adb',
-               test_group: 79,
-               trial_lessons_completed: 15,
-               user_agent: 'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; WOW64; Trident/6.0; .NET4.0C)',
-               user_id: '523b4006f6ba18ca6501096f',
-               user_os: 'Windows 7',
-               user_ua: 'IE 10.0'
-             }
-           };
+var datum = { '$distinct_id': '142735c9c18a-0af4a4507-6100f53-c0000-142735c9c1c54',
+              '$properties':
+              { '$browser': 'Mobile Safari',
+                '$campaigns': [ 22366, 25320, 51670 ],
+                '$city': 'Springfield',
+                '$country_code': 'US',
+                '$created': '2013-11-19T21:35:54',
+                '$deliveries': [ 37611399, 37958769, 38011197 ],
+                '$email': 'qmulus1@yahoo.com',
+                '$first_name': 'Will',
+                '$initial_referrer': 'http://www.fluencia.com/signup/?utm_source=sd_desktop&utm_medium=main_content&utm_content=learnspanishproductimage',
+                '$initial_referring_domain': 'www.fluencia.com',
+                '$last_name': null,
+                '$last_seen': '2013-11-20T23:54:49',
+                '$os': 'iOS',
+                '$region': 'Oregon',
+                '$transactions': [ { '$amount': 14.95, '$time': '2013-11-20T23:37:40' } ],
+                birth_year: 1979,
+                email_announcements: true,
+                email_newsletter: true,
+                email_offers: true,
+                email_reminders: true,
+                gender: 'M',
+                goal_explanation: 'So that I communicate with members of my family.',
+                goal_hours: 5,
+                initial_referrer: 'http://www.fluencia.com/signup/?utm_source=sd_desktop&utm_medium=main_content&utm_content=learnspanishproductimage',
+                initial_referring_domain: 'www.fluencia.com',
+                last_login: '2013-11-20T21:26:23',
+                learning_lang: 'es',
+                lessons_completed: 12,
+                native_lang: 'en',
+                self_assessment: 1,
+                sub_activated_at: '2013-11-20T23:37:34',
+                sub_attempted_at: '2013-11-20T23:36:43',
+                sub_canceled_at: null,
+                sub_current_period_ends_at: '2013-12-20T23:37:34',
+                sub_current_period_started_at: '2013-11-20T23:37:34',
+                sub_expires_at: null,
+                sub_plan_code: '0001-01',
+                sub_plan_months: 1,
+                sub_plan_ppm: 14.95,
+                sub_state: 'subscriber',
+                sub_uuid: '23e7be29cab64ca54aabd449be999263',
+                test_group: 60,
+                trial_lessons_allowed: 15,
+                trial_lessons_completed: 10,
+                user_agent: 'Mozilla/5.0 (iPad; CPU OS 7_0_2 like Mac OS X) AppleWebKit/537.51.1 (KHTML, like Gecko) Version/7.0 Mobile/11A501 Safari/9537.53',
+                user_id: '528c200af113bd444f00295c',
+                user_os: 'iOS 7.0.2',
+                user_signup_device_type: 'tablet',
+                user_signup_ua: 'Mobile Safari 7.0',
+                user_ua: 'Mobile Safari 7.0',
+                utm_campaign: 'simplesignupredirect',
+                utm_content: 'learnspanishproductimage',
+                utm_medium: 'main_content',
+                utm_source: 'sd_desktop'
+              }
+            };
 
 // Initial generation of columns. Re-run when available properties change to see what the new ones are.
-var columns = Object.keys(datum.$properties);
-console.log("all columns", columns);
+//var columns = Object.keys(datum.$properties);
+//console.log("all columns", columns);
 
 // Define it now that we have a list.
 var columns = [ '$browser',
@@ -120,6 +120,8 @@ var columns = [ '$browser',
                 'gender',
                 'goal_explanation',
                 'goal_hours',
+                'initial_referrer',
+                'initial_referring_domain',
                 'last_login',
                 'learning_lang',
                 'lessons_completed',
@@ -137,12 +139,18 @@ var columns = [ '$browser',
                 'sub_state',
                 'sub_uuid',
                 'test_group',
+                'trial_lessons_allowed',
                 'trial_lessons_completed',
                 'user_agent',
                 'user_id',
                 'user_os',
-                'user_ua' ];
-
+                'user_signup_device_type',
+                'user_signup_ua',
+                'user_ua',
+                'utm_campaign',
+                'utm_content',
+                'utm_medium',
+                'utm_source' ];
 var outputData = [];
 
 // Initial request: Get the size of each page, total number of
@@ -164,13 +172,15 @@ mx.request(
         // Sanity check.
         console.log("Parsed: pageSize totalCount numRequests recordsCount", pageSize, totalCount, numRequests, recordsCount);
 
-        // Inspect user data format to see what columns are available and what the data looks like.
-        for (var result in data.results) {
-            var user = data.results[result];
-            if(user.$properties.sub_state == "subscriber") {
-                console.log("User props: ", util.inspect(user, {depth: null}));
-            }
-        }
+        // Inspect user data format to see what columns are available
+        // and what the data looks like. Rerun when columns have
+        // changed.
+        // for (var result in data.results) {
+        //     var user = data.results[result];
+        //     if(user.$properties.sub_state == "subscriber") {
+        //         console.log("User props: ", util.inspect(user, {depth: null}));
+        //     }
+        // }
 
         // Get the rest of the data.
         doLoop();
