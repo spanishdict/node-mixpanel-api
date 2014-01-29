@@ -278,3 +278,10 @@ var doLoop = function() {
     });
 
 };
+
+
+/*
+ 1. remove commas
+ 2. replace tabs with commas
+ gsed 's/,//g' mixpanel.tsv | gsed 's/\t/,/g' > mixpanel.csv
+ */
