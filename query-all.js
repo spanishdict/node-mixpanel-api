@@ -12,7 +12,7 @@ var fs = require("fs"),
 
 var api_key  = '',
     api_secret = '',
-    REQUEST_INTERVAL = 500; // Short break between requests to prevent rate limiting in case they use it.
+    REQUEST_INTERVAL = 100; // Short break between requests to prevent rate limiting in case they use it.
 
 try {
     var config = JSON.parse(fs.readFileSync(configPath + configFile));
